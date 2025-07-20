@@ -382,6 +382,10 @@
                         foreground: '#000000'
                     });
                     
+                    // Sembunyikan form dan reset
+                    $('#shortenForm').hide();
+                    $('#shortenForm')[0].reset();
+                    
                     // Scroll to result
                     $('html, body').animate({
                         scrollTop: $('#resultBox').offset().top - 100
@@ -429,6 +433,7 @@
 
         function resetForm() {
             $('#shortenForm')[0].reset();
+            $('#shortenForm').show();
             $('#resultBox').hide();
             $('#urlInfo').hide();
             $('#shortenAlert').html('');
