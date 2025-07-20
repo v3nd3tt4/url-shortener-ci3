@@ -2,6 +2,15 @@
 
 Aplikasi URL Shortener yang dibangun dengan CodeIgniter 3. Aplikasi ini memungkinkan pengguna untuk membuat link singkat yang mudah dibagikan dengan fitur analytics dan manajemen URL.
 
+## Screenshot
+![Dashboard](gambar/1.png)
+
+![URL Shortener](gambar/2.png)
+
+![Result URL Shortener](gambar/3.png)
+
+![Login](gambar/4.png)
+
 ## 🚀 Fitur
 
 ### Untuk Pengguna Umum

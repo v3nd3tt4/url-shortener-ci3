@@ -29,7 +29,7 @@
 
         .login-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             padding: 2rem;
         }
 
@@ -161,7 +161,7 @@
                     
                     <div class="mb-3">
                         <label for="username" class="form-label">
-                            <i class="fas fa-user me-2"></i>Username
+                            Username
                         </label>
                         <div class="input-group">
                             <span class="input-group-text">
@@ -179,7 +179,7 @@
 
                     <div class="mb-4">
                         <label for="password" class="form-label">
-                            <i class="fas fa-lock me-2"></i>Password
+                            Password
                         </label>
                         <div class="input-group">
                             <span class="input-group-text">
