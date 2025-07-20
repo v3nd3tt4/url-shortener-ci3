@@ -93,7 +93,7 @@ chmod 755 application/logs/
 
 **Default Credentials:**
 - Username: `admin`
-- Password: `password`
+- Password: `admin`
 
 **Untuk mengubah password:**
 1. Login ke dashboard admin
