@@ -16,6 +16,12 @@ class Url extends CI_Controller {
     }
 
     public function shorten() {
+        // Cek apakah request berasal dari browser (form submission atau AJAX)
+        if (!$this->input->is_ajax_request() && empty($_SERVER['HTTP_REFERER'])) {
+            show_error('Direct access is not allowed', 403);
+            return;
+        }
+
         if ($this->input->post()) {
             
             $original_url = $this->input->post('original_url');
@@ -244,7 +250,6 @@ class Url extends CI_Controller {
             return;
         }
 
-        // DataTable server-side parameters
         $draw = $this->input->post('draw');
         $start = $this->input->post('start');
         $length = $this->input->post('length');
@@ -252,15 +257,14 @@ class Url extends CI_Controller {
         $order_column = $this->input->post('order')[0]['column'];
         $order_dir = $this->input->post('order')[0]['dir'];
 
-        // Column mapping
         $columns = ['short_code', 'original_url', 'title', 'clicks', 'is_active', 'created_at', 'expired_at', 'id'];
         $order_by = $columns[$order_column] ?? 'created_at';
 
-        // Build query
-        $this->db->select('*');
-        $this->db->from('urls');
+        // Total records sebelum filter
+        $total_records = $this->db->count_all('urls');
 
-        // Search functionality
+        // Query untuk filter
+        $this->db->from('urls');
         if (!empty($search)) {
             $this->db->group_start();
             $this->db->like('short_code', $search);
@@ -269,18 +273,13 @@ class Url extends CI_Controller {
             $this->db->or_like('description', $search);
             $this->db->group_end();
         }
+        $filtered_records = $this->db->count_all_results('', false);
 
-        // Get total records before filtering
-        $total_records = $this->db->count_all_results('', FALSE);
-
-        // Order and limit
+        // Order dan limit
         $this->db->order_by($order_by, $order_dir);
         $this->db->limit($length, $start);
-
-        // Get filtered data
         $urls = $this->db->get()->result();
 
-        // Prepare data for DataTable
         $data = [];
         foreach ($urls as $url) {
             $status = 'active';
@@ -292,28 +291,19 @@ class Url extends CI_Controller {
                 $status = 'expired';
                 $statusText = 'Expired';
             }
-
             $data[] = [
-                // Short URL
                 '<div class="d-flex align-items-center">
                     <a href="' . base_url($url->short_code) . '" target="_blank" class="url-link me-2">' . base_url($url->short_code) . '</a>
                     <button class="btn btn-sm btn-outline-secondary" onclick="copyUrl(\'' . base_url($url->short_code) . '\')" title="Salin URL">
                         <i class="fas fa-copy"></i>
                     </button>
                 </div>',
-                // Original URL
                 '<div class="original-url" title="' . $url->original_url . '">' . $url->original_url . '</div>',
-                // Title
                 $url->title ?: '-',
-                // Clicks
                 '<span class="badge bg-primary">' . $url->clicks . '</span>',
-                // Status
                 '<span class="url-status status-' . $status . '">' . $statusText . '</span>',
-                // Created
                 date('d/m/Y H:i', strtotime($url->created_at)),
-                // Expired
                 $url->expired_at ? date('d/m/Y H:i', strtotime($url->expired_at)) : 'Tidak ada',
-                // Actions
                 '<div class="btn-group btn-group-sm">
                     <button class="btn btn-warning" onclick="editUrl(' . $url->id . ')">
                         <i class="fas fa-edit"></i>
@@ -324,9 +314,6 @@ class Url extends CI_Controller {
                 </div>'
             ];
         }
-
-        // Get total records after filtering
-        $filtered_records = $this->db->count_all_results('', FALSE);
 
         echo json_encode([
             'draw' => intval($draw),

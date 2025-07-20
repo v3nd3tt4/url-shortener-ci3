@@ -392,6 +392,10 @@
                     data: function(d) {
                         // Tambahkan CSRF token jika diperlukan
                         d.<?= $this->security->get_csrf_token_name() ?> = '<?= $this->security->get_csrf_hash() ?>';
+                    },
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTables AJAX error:', xhr.responseText);
+                        Swal.fire('Error', 'Gagal memuat data tabel. Silakan cek koneksi atau hubungi admin.', 'error');
                     }
                 },
                 columns: [
